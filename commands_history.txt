@@ -1,0 +1,40 @@
+    1  man -Lru man
+    2  export LANG=ru_RU.UTF8
+    3  screen -Is
+    4  screen -S -d -m
+    5  screen -S top -d -m top
+    6  ' "
+    7  screen -S -d -m w
+    8  screen -S -d -m
+    9  screen -S top -d -m top
+   10  screen -Is
+   11  screen -r top
+   12  с
+   13  screen -r 51719.top
+   14  screen -S report
+   15  screen -ls
+   16  vi report_part1.txt
+   17  cat report_part1.txt
+   18  exit
+   19  watch /usr/bin/vmstat
+   20  exit
+   21  w
+   22  w
+   23  w
+   24  screen -S top -d -m top
+   25  screen -Is
+   26  screen -r top
+   27  watch /usr/bin/vmstat
+   28  screen -r report
+   29  screen -ls
+   30  screen -r 51719.top
+   31  screen -ls
+   32  screen -S 47951 -X quit
+   33  screen -S 43728 -X quit
+   34  screen -S 41935 -X quit
+   35  screen -S 33660 -X quit
+   36  screen -ls
+   37  ls -lah ~/*.txt 2>/dev/null
+   38  ls -lah ~/screenlog* 2>/dev/null
+   39  history | tail -30
+   40  history > ~/commands_history.txt
