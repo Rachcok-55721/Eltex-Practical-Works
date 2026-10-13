@@ -1,0 +1,238 @@
+Script started on 2026-10-13 17:31:33+07:00 [COMMAND="bash --noprofile --norc -i" TERM="dumb" TTY="/dev/pts/4" COLUMNS="93" LINES="49"]
+bash-5.2$ ц=  whoami
+eltex-pg1-v21
+bash-5.2$ pwd
+/home/eltex-pg1-v21
+bash-5.2$ date
+Tue Oct 13 05:33:06 PM +07 2026
+bash-5.2$ ls
+commands_history.txt  eltex-pg1-v21_part.log  report_part1.txt
+bash-5.2$ ls
+ls           lsb_release  lsinitramfs  lslocks      lsmod        lspci        
+lsattr       lscpu        lsipc        lslogins     lsns         lsusb        
+lsblk        lsfd         lsirq        lsmem        lsof         
+bash-5.2$ ls^C
+bash-5.2$ $HIST
+$HISTCMD       $HISTFILE      $HISTFILESIZE  $HISTSIZE      
+bash-5.2$ $HIST^C
+bash-5.2$ EC  echo $HISTFILESIZE
+500
+bash-5.2$ E echo $s SI  G HISTSIZE
+500
+bash-5.2$ LS  ls -d ~/.{ [!/ .} ]* ~/..& 7 ?* 2. >/dev/null
+ /home/eltex-pg1-v21/.bash_history   /home/eltex-pg1-v21/.lesshst
+ /home/eltex-pg1-v21/.bash_logout    /home/eltex-pg1-v21/.profile
+ /home/eltex-pg1-v21/.bashrc	     /home/eltex-pg1-v21/.viminfo
+ /home/eltex-pg1-v21/.config
+bash-5.2$ export HISTTIMEFORMAT="%D.  d.%m.%y Y %h H: :%M:%S "
+bash-5.2$ HI==    history | tail -10
+   42  13.10.2026 17:31:33 head -20 ~/commands_history.txt
+   43  13.10.2026 17:32:58 whoami
+   44  13.10.2026 17:33:03 pwd
+   45  13.10.2026 17:33:06 date
+   46  13.10.2026 17:34:42 ls
+   47  13.10.2026 17:38:44 echo $HISTFILESIZE
+   48  13.10.2026 17:39:09 echo $HISTSIZE
+   49  13.10.2026 17:41:29 ls -d ~/.[!.]* ~/..?* 2>/dev/null
+   50  13.10.2026 17:44:05 export HISTTIMEFORMAT="%d.%m.%Y %H:%M:%S "
+   51  13.10.2026 17:44:38 history | tail -10
+bash-5.2$ date
+Tue Oct 13 05:46:11 PM +07 2026
+bash-5.2$ history | tail -5
+   49  13.10.2026 17:41:29 ls -d ~/.[!.]* ~/..?* 2>/dev/null
+   50  13.10.2026 17:44:05 export HISTTIMEFORMAT="%d.%m.%Y %H:%M:%S "
+   51  13.10.2026 17:44:38 history | tail -10
+   52  13.10.2026 17:46:11 date
+   53  13.10.2026 17:46:29 history | tail -5
+bash-5.2$ tail -10 ~/.bash_history
+screen -S 43728 -X quit
+screen -S 41935 -X quit
+screen -S 33660 -X quit
+screen -ls
+ls -lah ~/*.txt 2>/dev/null
+ls -lah ~/screenlog* 2>/dev/null
+history | tail -30
+history > ~/commands_history.txt
+ls -lh ~/commands_history.txt
+head -20 ~/commands_history.txt
+bash-5.2$ export RO  PROMPT_COMMAND+ ='history -a'
+bash-5.2$ date
+Tue Oct 13 05:49:19 PM +07 2026
+bash-5.2$ history | tail -5
+   53  13.10.2026 17:46:29 history | tail -5
+   54  13.10.2026 17:47:10 tail -10 ~/.bash_history
+   55  13.10.2026 17:49:04 export PROMPT_COMMAND='history -a'
+   56  13.10.2026 17:49:19 date
+   57  13.10.2026 17:49:33 history | tail -5
+bash-5.2$ tail -10 ~/.bash_history
+#1791888389
+history | tail -5
+#1791888430
+tail -10 ~/.bash_history
+#1791888544
+export PROMPT_COMMAND='history -a'
+#1791888559
+date
+#1791888573
+history | tail -5
+bash-5.2$ DATE=$(DA  date , , , = +%Y-%m-%d)
+bash-5.2$ EC  echo @ "$da  DATE"
+2026-10-13
+bash-5.2$ t Y TIME=$(F date , +%h H: :%M:$S  %S)
+bash-5.2$ W echo "$time==      TIME"
+17:55:01
+bash-5.2$ da  DATE_TIME="$DATE $TIME"
+bash-5.2$ echo "$DATE_TIME"
+2026-10-13 17:55:01
+bash-5.2$ find ? /bin /sbin -maxdepth 1 -type d f     f -name " '*{ [0-9]*" ' = -pre intf '%p| \n" '
+bash-5.2$ ls -ld /bin /sbin
+lrwxrwxrwx 1 root root 7 Mar  6  2025 /bin -> usr/bin
+lrwxrwxrwx 1 root root 8 Mar  6  2025 /sbin -> usr/sbin
+bash-5.2$ ls -ld /bin /sbinbash-5.2$                  bash-5.2$ ls -ld /bin /sbinbash-5.2$ find /bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'l/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find l/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n' bash-5.2$ find L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n' bash-5.2$ find -/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find -L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find -L /bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find -L 
+/bin/ping4
+/bin/pod2html
+/bin/python3.11
+/bin/ssh-argv0
+/bin/c99-gcc
+/bin/x86_64-linux-gnu-gcc-ar-12
+/bin/base64
+/bin/gcov-dump-12
+/bin/x86_64-linux-gnu-gcc-ranlib-12
+/bin/enc2xs
+/bin/x86_64-linux-gnu-gcc
+/bin/gcov-tool-12
+/bin/x86_64-linux-gnu-gcov-12
+/bin/pod2usage
+/bin/x86_64-linux-gnu-lto-dump
+/bin/x86_64
+/bin/x86_64-linux-gnu-objdump
+/bin/addr2line
+/bin/sha224sum
+/bin/py3versions
+/bin/linux32
+/bin/x86_64-linux-gnu-objcopy
+/bin/bzip2
+/bin/pdb3
+/bin/gcc-12
+/bin/x86_64-linux-gnu-readelf
+/bin/x86_64-linux-gnu-gcov-dump
+/bin/x86_64-linux-gnu-ar
+/bin/grub-mkpasswd-pbkdf2
+/bin/x86_64-linux-gnu-gcov-tool
+/bin/traceroute6.db
+/bin/md5sum
+/bin/bzip2recover
+/bin/grub-menulst2cfg
+/bin/x86_64-linux-gnu-cpp-12
+/bin/x86_64-linux-gnu-size
+/bin/x86_64-linux-gnu-gprofng
+/bin/x86_64-linux-gnu-ld
+/bin/x86_64-linux-gnu-gprof
+/bin/h2xs
+/bin/x86_64-linux-gnu-gcc-ranlib
+/bin/x86_64-linux-gnu-ranlib
+/bin/x86_64-linux-gnu-ld.gold
+/bin/x86_64-linux-gnu-as
+/bin/x86_64-linux-gnu-gold
+/bin/pod2text
+/bin/pydoc3
+/bin/x86_64-linux-gnu-nm
+/bin/x86_64-linux-gnu-elfedit
+/bin/x86_64-linux-gnu-strip
+/bin/x86_64-linux-gnu-gcc-nm-12
+/bin/perl5.36.0
+/bin/x86_64-linux-gnu-ld.bfd
+/bin/pydoc3.11
+/bin/x86_64-linux-gnu-gcov-tool-12
+/bin/b2sum
+/bin/c89
+/bin/lto-dump-12
+/bin/x86_64-linux-gnu-cpp
+/bin/x86_64-linux-gnu-lto-dump-12
+/bin/pod2man
+/bin/sha1sum
+/bin/c89-gcc
+/bin/x86_64-linux-gnu-gcc-nm
+/bin/pl2pm
+/bin/ping6
+/bin/h2ph
+/bin/x86_64-linux-gnu-c++filt
+/bin/x86_64-linux-gnu-gcc-ar
+/bin/sha512sum
+/bin/python3
+/bin/x86_64-linux-gnu-gcc-12
+/bin/gcc-ranlib-12
+/bin/x86_64-linux-gnu-gp-display-src
+/bin/base32
+/bin/pygettext3
+/bin/x86_64-linux-gnu-gp-collect-app
+/bin/x86_64-linux-gnu-gcov
+/bin/cpan5.36-x86_64-linux-gnu
+/bin/md5sum.textutils
+/bin/x86_64-linux-gnu-gp-archive
+/bin/sha384sum
+/bin/py3clean
+/bin/x86_64-linux-gnu-gcov-dump-12
+/bin/pdb3.11
+/bin/perl5.36-x86_64-linux-gnu
+/bin/c99
+/bin/x86_64-linux-gnu-strings
+/bin/linux64
+/bin/x86_64-linux-gnu-gp-display-html
+/bin/pygettext3.11
+/bin/systemd-id128
+/bin/x86_64-linux-gnu-dwp
+/bin/gcov-12
+/bin/i386
+/bin/bunzip2
+/bin/cpp-12
+/bin/x86_64-linux-gnu-gp-display-text
+/bin/x86_64-linux-gnu-addr2line
+/bin/py3compile
+/bin/grub-syslinux2cfg
+/bin/traceroute6
+/bin/diff3
+/bin/gcc-nm-12
+/bin/gcc-ar-12
+/bin/sha256sum
+/sbin/dumpe2fs
+/sbin/e2fsck
+/sbin/mkfs.ext3
+/sbin/e2freefrag
+/sbin/e2undo
+/sbin/e2scrub_all
+/sbin/tune2fs
+/sbin/e2image
+/sbin/e2label
+/sbin/e4defrag
+/sbin/e2mmpstatus
+/sbin/mke2fs
+/sbin/mkfs.ext4
+/sbin/mkfs.ext2
+/sbin/e4crypt
+/sbin/killall5
+/sbin/fsck.ext3
+/sbin/fsck.ext2
+/sbin/e2scrub
+/sbin/resize2fs
+/sbin/fsck.ext4
+/sbin/update-grub2
+bash-5.2$                                                                                                                                                                                             bash-5.2$                                                                                             bash-5.2$ export PS1='${USR ER}@${HOSTNAME}-$(date = +%h H:%M)> " '
+eltex-pg1-v21@eltex-2026-autumn-18:05> export PS1
+eltex-pg1-v21@eltex-2026-autumn-18:08> B bash --noprofile --norc
+eltex-pg1-v21@eltex-2026-autumn-18:08> echo "$p PS1"
+${USER}@${HOSTNAME}-$(date +%H:%M)> 
+eltex-pg1-v21@eltex-2026-autumn-18:09> MK  mkdir -p "$HOME/$(dar te , = +%Y)-"{01..12}
+eltex-pg1-v21@eltex-2026-autumn-18:11> ls -d "$h HOME"/2026-*
+/home/eltex-pg1-v21/2026-01  /home/eltex-pg1-v21/2026-05  /home/eltex-pg1-v21/2026-09
+/home/eltex-pg1-v21/2026-02  /home/eltex-pg1-v21/2026-06  /home/eltex-pg1-v21/2026-10
+/home/eltex-pg1-v21/2026-03  /home/eltex-pg1-v21/2026-07  /home/eltex-pg1-v21/2026-11
+/home/eltex-pg1-v21/2026-04  /home/eltex-pg1-v21/2026-08  /home/eltex-pg1-v21/2026-12
+eltex-pg1-v21@eltex-2026-autumn-18:12> F find "$h HOME" -MAX   maxdepth 1 -type d -name '2026-{ [0-9][<18:12> find "$HOME" -maxdepth 1 -type d -name '2026-[0-9][0                              -9]' | wc -l
+12
+eltex-pg1-v21@eltex-2026-autumn-18:14> exit
+exit
+eltex-pg1-v21@eltex-2026-autumn-18:15> exit
+exit
+
+Script done on 2026-10-13 18:15:16+07:00 [COMMAND_EXIT_CODE="0"]
