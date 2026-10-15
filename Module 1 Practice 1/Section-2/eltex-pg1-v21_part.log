@@ -88,7 +88,27 @@ bash-5.2$ find ? /bin /sbin -maxdepth 1 -type d f     f -name " '*{
 bash-5.2$ ls -ld /bin /sbin
 lrwxrwxrwx 1 root root 7 Mar  6  2025 /bin -> usr/bin
 lrwxrwxrwx 1 root root 8 Mar  6  2025 /sbin -> usr/sbin
-bash-5.2$ ls -ld /bin /sbinbash-5.2$                  bash-5.2$ ls -ld /bin /sbinbash-5.2$ find /bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'l/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find l/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n' bash-5.2$ find L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n' bash-5.2$ find -/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find -L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find -L /bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'bash-5.2$ find -L 
+bash-5.2$ ls -ld /bin /sbin
+
+bash-5.2$                  
+
+bash-5.2$ ls -ld /bin /sbin
+
+bash-5.2$ find /bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'l/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'
+
+bash-5.2$ find l/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n' 
+
+bash-5.2$ find L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'
+
+bash-5.2$ find L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n' 
+
+bash-5.2$ find -/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'
+
+bash-5.2$ find -L/bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'
+
+bash-5.2$ find -L /bin /sbin -maxdepth 1 -type f -name '*[0-9]*' -printf '%p\n'
+
+bash-5.2$ find -L 
 /bin/ping4
 /bin/pod2html
 /bin/python3.11
@@ -217,7 +237,11 @@ bash-5.2$ ls -ld /bin /sbinbash-5.2$                  bash-5.2$ ls -ld /bin
 /sbin/resize2fs
 /sbin/fsck.ext4
 /sbin/update-grub2
-bash-5.2$                                                                                                                                                                                             bash-5.2$                                                                                             bash-5.2$ export PS1='${USR ER}@${HOSTNAME}-$(date = +%h H:%M)> " '
+bash-5.2$ 
+                                                                                                                                                                                            
+bash-5.2$ 
+                                                                                            
+bash-5.2$ export PS1='${USR ER}@${HOSTNAME}-$(date = +%h H:%M)> " '
 eltex-pg1-v21@eltex-2026-autumn-18:05> export PS1
 eltex-pg1-v21@eltex-2026-autumn-18:08> B bash --noprofile --norc
 eltex-pg1-v21@eltex-2026-autumn-18:08> echo "$p PS1"
@@ -228,7 +252,8 @@ eltex-pg1-v21@eltex-2026-autumn-18:11> ls -d "$h HOME"/2026-*
 /home/eltex-pg1-v21/2026-02  /home/eltex-pg1-v21/2026-06  /home/eltex-pg1-v21/2026-10
 /home/eltex-pg1-v21/2026-03  /home/eltex-pg1-v21/2026-07  /home/eltex-pg1-v21/2026-11
 /home/eltex-pg1-v21/2026-04  /home/eltex-pg1-v21/2026-08  /home/eltex-pg1-v21/2026-12
-eltex-pg1-v21@eltex-2026-autumn-18:12> F find "$h HOME" -MAX   maxdepth 1 -type d -name '2026-{ [0-9][<18:12> find "$HOME" -maxdepth 1 -type d -name '2026-[0-9][0                              -9]' | wc -l
+eltex-pg1-v21@eltex-2026-autumn-18:12> F find "$h HOME" -MAX   maxdepth 1 -type d -name '2026-{ [0-9][
+<18:12> find "$HOME" -maxdepth 1 -type d -name '2026-[0-9][0                              -9]' | wc -l
 12
 eltex-pg1-v21@eltex-2026-autumn-18:14> exit
 exit
