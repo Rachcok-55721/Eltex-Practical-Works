@@ -83,3 +83,36 @@ nothing added to commit but untracked files present (use "git add" to track)
 Содержимое Section-3:
 total 4.0K
 -rw-r--r-- 1 root root 3.0K Oct 19 12:48 practice2_eltex-pg1-v21_part3.log
+========================================
+Задание 10. Клонирование репозитория
+========================================
+Проверка состояния клона:
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+Адрес удалённого репозитория:
+origin	git@github.com:Rachcok-55721/Eltex-Practical-Works.git (fetch)
+origin	git@github.com:Rachcok-55721/Eltex-Practical-Works.git (push)
+Содержимое третьего раздела:
+total 4.0K
+-rw-r--r-- 1 root root 3.6K Oct 19 12:53 practice2_eltex-pg1-v21_part3.log
+========================================
+Задание 11. Синхронизация репозиториев
+========================================
+История последних коммитов:
+9a63699 Update README for Practice 2 Section 3
+0565a54 Add Practice 2 Section 3 logs
+6d8ab22 Create .gitkeep
+e0ea5bb Delete Module 1 Practice 2/Section-2/.gitkeep
+bc1708a Add files via upload
+Состояние клона после синхронизации:
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+Последние строки README.md:
+# Eltex-Practical-Works
+Практические работы Eltex
+
+Practice 2 Section 3 - Git synchronization completed
