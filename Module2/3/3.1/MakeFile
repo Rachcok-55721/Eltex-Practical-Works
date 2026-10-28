@@ -1,0 +1,20 @@
+
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -finput-charset=UTF-8 -fexec-charset=CP1251
+TARGET = permissions.exe
+SRC = Module3.1.c
+
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+
+run: $(TARGET)
+	.\$(TARGET)
+
+clean:
+	@if exist $(TARGET) del /Q $(TARGET)
+
+rebuild: clean all
+
+.PHONY: all run clean rebuild
