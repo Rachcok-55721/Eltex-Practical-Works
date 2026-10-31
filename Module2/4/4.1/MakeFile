@@ -1,0 +1,19 @@
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11
+TARGET = contacts.exe
+SRC = Module4.1.c
+
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+
+run: $(TARGET)
+	.\$(TARGET)
+
+clean:
+	-del /Q $(TARGET) 2>NUL
+
+rebuild: clean all
+
+.PHONY: all run clean rebuild
