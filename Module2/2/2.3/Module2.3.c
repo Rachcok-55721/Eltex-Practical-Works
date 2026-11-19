@@ -1,4 +1,4 @@
-﻿
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -44,144 +44,6 @@ double squareRoot(double a, double b) {
     return sqrt(a);
 }
 
-// Read an integer
-int inputInt() {
-    int value;
-    char buffer[100];
-    char extra;
-
-    while (1) {
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            exit(0);
-        }
-
-        if (sscanf(buffer, " %d %c", &value, &extra) == 1) {
-            return value;
-        }
-
-        printf("Invalid input. Enter an integer: ");
-    }
-}
-
-// Read a number
-double inputDouble() {
-    double value;
-    char buffer[100];
-    char extra;
-
-    while (1) {
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            exit(0);
-        }
-
-        if (sscanf(buffer, " %lf %c", &value, &extra) == 1 &&
-            isfinite(value)) {
-            return value;
-        }
-
-        printf("Invalid input. Enter a number: ");
-    }
-}
-
-// Display available commands
-int showMenu(Command commands[], int count,
-    int available[]) {
-    int total = 0;
-
-    printf("\n========== CALCULATOR ==========\n");
-
-    for (int i = 0; i < count; i++) {
-        if (commands[i].enabled) {
-            available[total] = i;
-            total++;
-
-            printf("%d. %s\n",
-                i + 1, commands[i].name);
-        }
-    }
-
-    printf("7. Manage commands\n");
-    printf("0. Exit\n");
-    printf("================================\n");
-
-    return total;
-}
-
-
-// Enable or disable commands
-void manageCommands(Command commands[], int count) {
-    int choice;
-
-    do {
-        printf("\n===== MANAGE COMMANDS =====\n");
-
-        for (int i = 0; i < count; i++) {
-            printf("%d. %s [%s]\n",
-                i + 1,
-                commands[i].name,
-                commands[i].enabled ? "ON" : "OFF");
-        }
-
-        printf("0. Back to calculator\n");
-        printf("===========================\n");
-        printf("Select command to toggle: ");
-
-        choice = inputInt();
-
-        if (choice >= 1 && choice <= count) {
-            int index = choice - 1;
-
-            commands[index].enabled =
-                !commands[index].enabled;
-
-            printf("\n%s is now %s.\n",
-                commands[index].name,
-                commands[index].enabled ? "ON" : "OFF");
-        }
-        else if (choice != 0) {
-            printf("\nInvalid choice!\n");
-        }
-
-    } while (choice != 0);
-}
-
-// Execute selected command
-void executeCommand(Command* command) {
-    double a, b = 0.0, result;
-
-    printf("\n===== %s =====\n", command->name);
-
-    printf("Enter first number: ");
-    a = inputDouble();
-
-    if (command->arguments == 2) {
-        printf("Enter second number: ");
-        b = inputDouble();
-    }
-
-    // Check division by zero
-    if (command->function == divide && b == 0.0) {
-        printf("\nError: Division by zero!\n");
-        return;
-    }
-
-    // Check negative square root
-    if (command->function == squareRoot && a < 0.0) {
-        printf("\nError: Negative square root!\n");
-        return;
-    }
-
-    // Call function using function pointer
-    result = command->function(a, b);
-
-    if (!isfinite(result)) {
-        printf("\nError: Invalid mathematical result!\n");
-        return;
-    }
-
-    printf("\nResult: %.2f\n", result);
-}
-
 // Main program
 int main() {
     // Dynamic array of commands
@@ -219,14 +81,27 @@ int main() {
         "Square root", squareRoot, 1, 1
     };
 
-    int available[MAX_COMMANDS];
     int choice;
+    char buffer[100];
+    char extra;
 
     while (1) {
-        showMenu(commands, MAX_COMMANDS, available);
+        printf("\n========== CALCULATOR ==========\n");
+        for (int i = 0; i < MAX_COMMANDS; i++) {
+            if (commands[i].enabled) {
+                printf("%d. %s\n", i + 1, commands[i].name);
+            }
+        }
+        printf("7. Manage commands\n");
+        printf("0. Exit\n");
+        printf("================================\n");
 
         printf("Enter your choice: ");
-        choice = inputInt();
+        do {
+            if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+            if (sscanf(buffer, " %d %c", &choice, &extra) == 1) break;
+            printf("Invalid input. Enter an integer: ");
+        } while (1);
 
         if (choice == 0) {
             printf("\nExiting calculator. Goodbye!\n");
@@ -234,14 +109,70 @@ int main() {
         }
 
         if (choice == 7) {
-            manageCommands(commands, MAX_COMMANDS);
+            int manageChoice;
+            do {
+                printf("\n===== MANAGE COMMANDS =====\n");
+                for (int i = 0; i < MAX_COMMANDS; i++) {
+                    printf("%d. %s [%s]\n", i + 1, commands[i].name,
+                           commands[i].enabled ? "ON" : "OFF");
+                }
+                printf("0. Back to calculator\n");
+                printf("===========================\n");
+                printf("Select command to toggle: ");
+                do {
+                    if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+                    if (sscanf(buffer, " %d %c", &manageChoice, &extra) == 1) break;
+                    printf("Invalid input. Enter an integer: ");
+                } while (1);
+                if (manageChoice >= 1 && manageChoice <= MAX_COMMANDS) {
+                    int index = manageChoice - 1;
+                    commands[index].enabled = !commands[index].enabled;
+                    printf("\n%s is now %s.\n", commands[index].name,
+                           commands[index].enabled ? "ON" : "OFF");
+                } else if (manageChoice != 0) {
+                    printf("\nInvalid choice!\n");
+                }
+            } while (manageChoice != 0);
             continue;
         }
 
         if (choice >= 1 && choice <= MAX_COMMANDS &&
             commands[choice - 1].enabled) {
 
-            executeCommand(&commands[choice - 1]);
+            Command* command = &commands[choice - 1];
+            double a, b = 0.0, result;
+            printf("\n===== %s =====\n", command->name);
+            printf("Enter first number: ");
+            do {
+                if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+                if (sscanf(buffer, " %lf %c", &a, &extra) == 1 && isfinite(a)) break;
+                printf("Invalid input. Enter a number: ");
+            } while (1);
+            if (command->arguments == 2) {
+                printf("Enter second number: ");
+                do {
+                    if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+                    if (sscanf(buffer, " %lf %c", &b, &extra) == 1 && isfinite(b)) break;
+                    printf("Invalid input. Enter a number: ");
+                } while (1);
+            }
+            // Check division by zero
+            if (command->function == divide && b == 0.0) {
+                printf("\nError: Division by zero!\n");
+                continue;
+            }
+            // Check negative square root
+            if (command->function == squareRoot && a < 0.0) {
+                printf("\nError: Negative square root!\n");
+                continue;
+            }
+            // Call function using function pointer
+            result = command->function(a, b);
+            if (!isfinite(result)) {
+                printf("\nError: Invalid mathematical result!\n");
+                continue;
+            }
+            printf("\nResult: %.2f\n", result);
 
         }
         else {
@@ -249,6 +180,7 @@ int main() {
         }
     }
 
+cleanup:
     // Release allocated memory
     free(commands);
 
