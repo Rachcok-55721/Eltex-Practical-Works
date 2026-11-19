@@ -1,4 +1,3 @@
-﻿
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -32,50 +31,6 @@ Node* head = NULL;
 Node* tail = NULL;
 int count = 0;
 
-// Считывание строки с клавиатуры
-void inputString(char* str, int size) {
-    if (fgets(str, size, stdin) != NULL) {
-        size_t len = strcspn(str, "\n");
-
-        if (str[len] == '\n') {
-            str[len] = '\0';
-        }
-        else {
-            int ch;
-            while ((ch = getchar()) != '\n' && ch != EOF);
-        }
-    }
-    else {
-        str[0] = '\0';
-    }
-}
-
-// Ввод обязательного поля
-void inputRequired(char* str, int size) {
-    do {
-        inputString(str, size);
-
-        if (strlen(str) == 0) {
-            printf("This field is required. Try again: ");
-        }
-    } while (strlen(str) == 0);
-}
-
-// Ввод корректного номера меню или контакта
-int inputContactNumber(void) {
-    char buffer[30];
-    int number;
-    char extra;
-
-    inputString(buffer, sizeof(buffer));
-
-    if (sscanf(buffer, "%d %c", &number, &extra) != 1) {
-        return -1;
-    }
-
-    return number;
-}
-
 // Сравнение двух контактов по алфавиту
 int compareContacts(const Contact* a, const Contact* b) {
     int result;
@@ -93,54 +48,6 @@ int compareContacts(const Contact* a, const Contact* b) {
     }
 
     return strcmp(a->patronymic, b->patronymic);
-}
-
-// Ввод всех полей контакта
-void inputContactData(Contact* c) {
-    printf("Last name: ");
-    inputRequired(c->surname, MAX_LEN);
-
-    printf("First name: ");
-    inputRequired(c->name, MAX_LEN);
-
-    printf("Middle name: ");
-    inputString(c->patronymic, MAX_LEN);
-
-    printf("Workplace: ");
-    inputString(c->workplace, MAX_LEN);
-
-    printf("Job title: ");
-    inputString(c->position, MAX_LEN);
-
-    printf("Phone number: ");
-    inputString(c->phone, MAX_LEN);
-
-    printf("Email address: ");
-    inputString(c->email, MAX_LEN);
-
-    printf("Social media profile: ");
-    inputString(c->social, MAX_LEN);
-
-    printf("Messenger profile: ");
-    inputString(c->messenger, MAX_LEN);
-}
-
-// Вывод одного контакта
-void printContact(const Contact* c, int number) {
-    printf("\nContact #%d\n", number);
-    printf("-----------------------------\n");
-
-    printf("Last name: %s\n", c->surname);
-    printf("First name: %s\n", c->name);
-    printf("Middle name: %s\n", c->patronymic);
-    printf("Workplace: %s\n", c->workplace);
-    printf("Job title: %s\n", c->position);
-    printf("Phone number: %s\n", c->phone);
-    printf("Email address: %s\n", c->email);
-    printf("Social media: %s\n", c->social);
-    printf("Messenger: %s\n", c->messenger);
-
-    printf("-----------------------------\n");
 }
 
 // Вставка узла в упорядоченный список
@@ -244,117 +151,33 @@ Node* getContactByNumber(int number) {
     return current;
 }
 
-// Добавление нового контакта
-void addContact(void) {
+
+// Add a contact to the sorted doubly linked list.
+int addContact(const Contact* contact) {
     Node* newNode = (Node*)malloc(sizeof(Node));
-
-    if (newNode == NULL) {
-        printf("\nError: memory allocation failed!\n");
-        return;
-    }
-
-    printf("\n===== ADD NEW CONTACT =====\n");
-
-    inputContactData(&newNode->data);
-
+    if (!newNode) return 0;
+    newNode->data = *contact;
     insertSorted(newNode);
-
-    printf("\nContact added successfully!\n");
-    printf("The list is sorted alphabetically.\n");
+    return 1;
 }
 
-// Вывод всех контактов
-void showContacts(void) {
-    Node* current = head;
-    int number = 1;
-
-    if (head == NULL) {
-        printf("\nThe contact list is empty.\n");
-        return;
-    }
-
-    printf("\n===== CONTACT LIST =====\n");
-
-    while (current != NULL) {
-        printContact(&current->data, number);
-
-        current = current->next;
-        number++;
-    }
-}
-
-// Редактирование существующего контакта
-void editContact(void) {
-    int number;
-    Node* node;
-    Contact updated;
-
-    if (head == NULL) {
-        printf("\nThe contact list is empty.\n");
-        return;
-    }
-
-    showContacts();
-
-    printf("\nEnter the contact number to edit: ");
-    number = inputContactNumber();
-
-    node = getContactByNumber(number);
-
-    if (node == NULL) {
-        printf("\nInvalid contact number!\n");
-        return;
-    }
-
-    printf("\n===== EDIT CONTACT =====\n");
-    printf("Enter new contact information.\n");
-
-    inputContactData(&updated);
-
-    // Удаление узла из прежней позиции
+// Edit a contact and reinsert it at its alphabetical position.
+int editContact(int number, const Contact* updated) {
+    Node* node = getContactByNumber(number);
+    if (!node) return 0;
     detachNode(node);
-
-    // Обновление данных контакта
-    node->data = updated;
-
-    // Вставка узла в правильную позицию
+    node->data = *updated;
     insertSorted(node);
-
-    printf("\nContact updated successfully!\n");
-    printf("The list has been sorted again.\n");
+    return 1;
 }
 
-// Удаление существующего контакта
-void deleteContact(void) {
-    int number;
-    Node* node;
-
-    if (head == NULL) {
-        printf("\nThe contact list is empty.\n");
-        return;
-    }
-
-    showContacts();
-
-    printf("\nEnter the contact number to delete: ");
-    number = inputContactNumber();
-
-    node = getContactByNumber(number);
-
-    if (node == NULL) {
-        printf("\nInvalid contact number!\n");
-        return;
-    }
-
-    // Отсоединение узла от списка
+int deleteContact(int number) {
+    Node* node = getContactByNumber(number);
+    if (!node) return 0;
     detachNode(node);
-
-    // Освобождение выделенной памяти
     free(node);
-
-    printf("\nContact deleted successfully!\n");
+    return 1;
 }
-
 // Освобождение памяти всех узлов перед завершением
 void freeContacts(void) {
     Node* current = head;
@@ -371,50 +194,155 @@ void freeContacts(void) {
     count = 0;
 }
 
-// Главная функция программы
+
 int main(void) {
     int choice;
-
-    do {
+    char buffer[100], extra;
+    while (1) {
         printf("\n========== PHONE BOOK ==========\n");
-        printf("1. Add contact\n");
-        printf("2. View all contacts\n");
-        printf("3. Edit contact\n");
-        printf("4. Delete contact\n");
-        printf("0. Exit\n");
-        printf("================================\n");
+        printf("1. Add contact\n2. View all contacts\n3. Edit contact\n");
+        printf("4. Delete contact\n0. Exit\n================================\n");
         printf("Enter your choice: ");
-
-        choice = inputContactNumber();
-
+        if (!fgets(buffer, sizeof(buffer), stdin)) break;
+        if (sscanf(buffer, " %d %c", &choice, &extra) != 1) choice = -1;
         switch (choice) {
         case 1:
-            addContact();
-            break;
+        case 3: {
+            int index = 0;
+            if (choice == 3) {
+                if (!head) { printf("\nThe contact list is empty.\n"); break; }
+                printf("\n===== CONTACT LIST =====\n");
+                int number = 1;
+                for (Node* node = head; node != NULL; node = node->next) {
+                    const Contact* c = &node->data;
+                    printf("\nContact #%d\n", number++);
+                    printf("-----------------------------\n");
+                    printf("Last name: %s\n", c->surname);
+                    printf("First name: %s\n", c->name);
+                    printf("Middle name: %s\n", c->patronymic);
+                    printf("Workplace: %s\n", c->workplace);
+                    printf("Job title: %s\n", c->position);
+                    printf("Phone number: %s\n", c->phone);
+                    printf("Email address: %s\n", c->email);
+                    printf("Social media: %s\n", c->social);
+                    printf("Messenger: %s\n", c->messenger);
+                    printf("-----------------------------\n");
+                }
+                printf("\nEnter the contact number to edit: ");
+                if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+                if (sscanf(buffer, " %d %c", &index, &extra) != 1 ||
+                    index < 1 || index > count) {
+                    printf("\nInvalid contact number!\n"); break;
+                }
+            }
 
-        case 2:
-            showContacts();
-            break;
+            Contact contact = {0};
+            char* fields[] = {
+                contact.surname, contact.name, contact.patronymic,
+                contact.workplace, contact.position, contact.phone,
+                contact.email, contact.social, contact.messenger
+            };
+            const char* prompts[] = {
+                "Last name: ", "First name: ", "Middle name: ",
+                "Workplace: ", "Job title: ", "Phone number: ",
+                "Email address: ", "Social media profile: ", "Messenger profile: "
+            };
+            printf("\n===== %s CONTACT =====\n", choice == 1 ? "ADD NEW" : "EDIT");
+            if (choice == 3) printf("Enter new contact information.\n");
+            for (int i = 0; i < 9; i++) {
+                do {
+                    printf("%s", prompts[i]);
+                    if (!fgets(fields[i], MAX_LEN, stdin)) goto cleanup;
+                    size_t len = strcspn(fields[i], "\n");
+                    if (fields[i][len] == '\n') fields[i][len] = '\0';
+                    else {
+                        int ch;
+                        while ((ch = getchar()) != '\n' && ch != EOF) {}
+                    }
+                    if (i < 2 && fields[i][0] == '\0')
+                        printf("This field is required. Try again: ");
+                } while (i < 2 && fields[i][0] == '\0');
+            }
 
-        case 3:
-            editContact();
-            break;
-
-        case 4:
-            deleteContact();
-            break;
-
-        case 0:
-            freeContacts();
-            printf("\nExiting the phone book. Goodbye!\n");
-            break;
-
-        default:
-            printf("\nInvalid choice. Please try again.\n");
+            if (choice == 1) {
+                if (addContact(&contact)) {
+                    printf("\nContact added successfully!\n");
+                    printf("The list is sorted alphabetically.\n");
+                } else printf("\nError: memory allocation failed!\n");
+            } else {
+                if (editContact(index, &contact)) {
+                    printf("\nContact updated successfully!\n");
+                    printf("The list has been sorted again.\n");
+                } else {
+                    printf("\nInvalid contact number!\n");
+                }
+            }
             break;
         }
-
-    } while (choice != 0);
-
+        case 2: {
+            if (!head) {
+                printf("\nThe contact list is empty.\n");
+                break;
+            }
+            printf("\n===== CONTACT LIST =====\n");
+                int number = 1;
+                for (Node* node = head; node != NULL; node = node->next) {
+                    const Contact* c = &node->data;
+                    printf("\nContact #%d\n", number++);
+                    printf("-----------------------------\n");
+                    printf("Last name: %s\n", c->surname);
+                    printf("First name: %s\n", c->name);
+                    printf("Middle name: %s\n", c->patronymic);
+                    printf("Workplace: %s\n", c->workplace);
+                    printf("Job title: %s\n", c->position);
+                    printf("Phone number: %s\n", c->phone);
+                    printf("Email address: %s\n", c->email);
+                    printf("Social media: %s\n", c->social);
+                    printf("Messenger: %s\n", c->messenger);
+                    printf("-----------------------------\n");
+                }
+            break;
+        }
+        case 4: {
+            if (!head) { printf("\nThe contact list is empty.\n"); break; }
+            printf("\n===== CONTACT LIST =====\n");
+                int number = 1;
+                for (Node* node = head; node != NULL; node = node->next) {
+                    const Contact* c = &node->data;
+                    printf("\nContact #%d\n", number++);
+                    printf("-----------------------------\n");
+                    printf("Last name: %s\n", c->surname);
+                    printf("First name: %s\n", c->name);
+                    printf("Middle name: %s\n", c->patronymic);
+                    printf("Workplace: %s\n", c->workplace);
+                    printf("Job title: %s\n", c->position);
+                    printf("Phone number: %s\n", c->phone);
+                    printf("Email address: %s\n", c->email);
+                    printf("Social media: %s\n", c->social);
+                    printf("Messenger: %s\n", c->messenger);
+                    printf("-----------------------------\n");
+                }
+            printf("\nEnter the contact number to delete: ");
+            int index;
+            if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+            if (sscanf(buffer, " %d %c", &index, &extra) != 1 ||
+                index < 1 || index > count) {
+                printf("\nInvalid contact number!\n"); break;
+            }
+            if (deleteContact(index))
+                printf("\nContact deleted successfully!\n");
+            else
+                printf("\nInvalid contact number!\n");
+            break;
+        }
+        case 0:
+            printf("\nExiting the phone book. Goodbye!\n");
+            goto cleanup;
+        default:
+            printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+cleanup:
+    freeContacts();
     return 0;
 }
