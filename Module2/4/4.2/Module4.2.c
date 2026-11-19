@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,14 +31,12 @@ void initQueue(PriorityQueue* queue) {
 int enqueue(PriorityQueue* queue, int id,
     int priority, const char* text) {
     if (priority < 0 || priority > 255) {
-        printf("Invalid priority!\n");
         return 0;
     }
 
     Message* newMessage = malloc(sizeof(Message));
 
     if (newMessage == NULL) {
-        printf("Memory allocation error!\n");
         return 0;
     }
 
@@ -69,124 +67,46 @@ int enqueue(PriorityQueue* queue, int id,
     return 1;
 }
 
-// Удаление выбранного сообщения
-void removeNode(PriorityQueue* queue,
-    Message* previous, Message* current) {
-    if (previous == NULL) {
-        queue->head = current->next;
-    }
-    else {
-        previous->next = current->next;
-    }
 
-    printf("\nExtracted message:\n");
-    printf("ID: %d | Priority: %d | Text: %s\n",
-        current->id,
-        current->priority,
-        current->text);
-
+// Remove a node, optionally copying its contents for main() to display.
+void removeNode(PriorityQueue* queue, Message* previous,
+                Message* current, Message* extracted) {
+    if (extracted) *extracted = *current;
+    if (previous == NULL) queue->head = current->next;
+    else previous->next = current->next;
     free(current);
     queue->count--;
 }
 
-// Извлечение первого сообщения
-int dequeueFirst(PriorityQueue* queue) {
-    if (queue->head == NULL) {
-        printf("Queue is empty!\n");
-        return 0;
-    }
-
-    removeNode(queue, NULL, queue->head);
+int dequeueFirst(PriorityQueue* queue, Message* extracted) {
+    if (!queue->head) return 0;
+    removeNode(queue, NULL, queue->head, extracted);
     return 1;
 }
 
-// Извлечение по точному приоритету
-int dequeuePriority(PriorityQueue* queue, int priority) {
-    Message* current = queue->head;
+int dequeuePriority(PriorityQueue* queue, int priority, Message* extracted) {
     Message* previous = NULL;
-
-    while (current != NULL) {
+    for (Message* current = queue->head; current; current = current->next) {
         if (current->priority == priority) {
-            removeNode(queue, previous, current);
+            removeNode(queue, previous, current, extracted);
             return 1;
         }
-
         previous = current;
-        current = current->next;
     }
-
-    printf("No message with priority %d found.\n",
-        priority);
     return 0;
 }
 
-// Извлечение с приоритетом не ниже заданного
-int dequeueMinPriority(PriorityQueue* queue,
-    int minPriority) {
-    Message* current = queue->head;
+int dequeueMinPriority(PriorityQueue* queue, int minPriority, Message* extracted) {
     Message* previous = NULL;
-
-    while (current != NULL) {
+    for (Message* current = queue->head; current; current = current->next) {
         if (current->priority >= minPriority) {
-            removeNode(queue, previous, current);
+            removeNode(queue, previous, current, extracted);
             return 1;
         }
-
         previous = current;
-        current = current->next;
     }
-
-    printf("No message with priority >= %d found.\n",
-        minPriority);
     return 0;
 }
-
-// Вывод содержимого очереди
-void printQueue(const PriorityQueue* queue) {
-    if (queue->head == NULL) {
-        printf("\nQueue is empty!\n");
-        return;
-    }
-
-    printf("\n========== PRIORITY QUEUE ==========\n");
-
-    const Message* current = queue->head;
-
-    while (current != NULL) {
-        printf("ID: %d | Priority: %3d | Text: %s\n",
-            current->id,
-            current->priority,
-            current->text);
-
-        current = current->next;
-    }
-
-    printf("------------------------------------\n");
-    printf("Total messages: %d\n", queue->count);
-}
-
-// Генерация сообщений со случайными приоритетами
-void generateMessages(PriorityQueue* queue,
-    int amount, int* nextId) {
-    char text[MAX_TEXT];
-
-    for (int i = 0; i < amount; i++) {
-        int priority = rand() % 256;
-
-        snprintf(text, sizeof(text),
-            "Generated message %d", *nextId);
-
-        if (enqueue(queue, *nextId, priority, text)) {
-            (*nextId)++;
-        }
-        else {
-            break;
-        }
-    }
-
-    printf("\nMessage generation finished.\n");
-}
-
 // Очистка очереди и освобождение памяти
 void clearQueue(PriorityQueue* queue) {
     Message* current = queue->head;
@@ -201,140 +121,111 @@ void clearQueue(PriorityQueue* queue) {
     queue->count = 0;
 }
 
-// Проверка ввода целого числа
-int readInt(const char* prompt, int* value) {
-    char buffer[128];
-    char extra;
 
-    printf("%s", prompt);
-
-    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-        return 0;
-    }
-
-    if (sscanf(buffer, " %d %c", value, &extra) != 1) {
-        printf("Invalid number!\n");
-        return 0;
-    }
-
-    return 1;
-}
-
-// Главное меню программы
 int main(void) {
     PriorityQueue queue;
-    int choice;
-    int priority;
-    int amount;
-    int nextId = 1;
-    char text[MAX_TEXT];
-
+    int choice, priority, amount, nextId = 1;
+    char text[MAX_TEXT], buffer[128], extra;
+    Message extracted;
     initQueue(&queue);
     srand((unsigned int)time(NULL));
-
     while (1) {
         printf("\n========== PRIORITY QUEUE ==========\n");
-        printf("1. Add message\n");
-        printf("2. Generate random messages\n");
-        printf("3. Extract first message\n");
-        printf("4. Extract by exact priority\n");
-        printf("5. Extract by minimum priority\n");
-        printf("6. Show all messages\n");
-        printf("7. Clear queue\n");
-        printf("0. Exit\n");
-        printf("====================================\n");
-
-        if (!readInt("Enter your choice: ", &choice)) {
-            if (feof(stdin)) break;
-            continue;
+        printf("1. Add message\n2. Generate random messages\n");
+        printf("3. Extract first message\n4. Extract by exact priority\n");
+        printf("5. Extract by minimum priority\n6. Show all messages\n");
+        printf("7. Clear queue\n0. Exit\n====================================\n");
+        printf("Enter your choice: ");
+        if (!fgets(buffer, sizeof(buffer), stdin)) break;
+        if (sscanf(buffer, " %d %c", &choice, &extra) != 1) {
+            printf("Invalid number!\n"); continue;
         }
-
         switch (choice) {
         case 1:
-            if (!readInt("Enter priority (0-255): ",
-                &priority)) {
-                break;
+            printf("Enter priority (0-255): ");
+            if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+            if (sscanf(buffer, " %d %c", &priority, &extra) != 1) {
+                printf("Invalid number!\n"); break;
             }
-
             if (priority < 0 || priority > 255) {
-                printf("Priority must be 0-255!\n");
-                break;
+                printf("Priority must be 0-255!\n"); break;
             }
-
             printf("Enter message text: ");
-
-            if (fgets(text, sizeof(text), stdin) == NULL) {
-                break;
-            }
-
+            if (!fgets(text, sizeof(text), stdin)) goto cleanup;
             text[strcspn(text, "\n")] = '\0';
-
             if (enqueue(&queue, nextId, priority, text)) {
-                printf("Message added successfully!\n");
+                printf("Message added successfully!\n"); nextId++;
+            } else printf("Memory allocation error!\n");
+            break;
+        case 2:
+            printf("Number of messages: ");
+            if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+            if (sscanf(buffer, " %d %c", &amount, &extra) != 1) {
+                printf("Invalid number!\n"); break;
+            }
+            if (amount <= 0 || amount > 10000) {
+                printf("Enter a number from 1 to 10000.\n"); break;
+            }
+            for (int i = 0; i < amount; i++) {
+                int randomPriority = rand() % 256;
+                snprintf(text, sizeof(text), "Generated message %d", nextId);
+                if (!enqueue(&queue, nextId, randomPriority, text)) {
+                    printf("Memory allocation error!\n"); break;
+                }
                 nextId++;
             }
+            printf("\nMessage generation finished.\n");
             break;
-
-        case 2:
-            if (!readInt("Number of messages: ", &amount)) {
-                break;
-            }
-
-            if (amount <= 0 || amount > 10000) {
-                printf("Enter a number from 1 to 10000.\n");
-                break;
-            }
-
-            generateMessages(&queue, amount, &nextId);
-            break;
-
         case 3:
-            dequeueFirst(&queue);
+            if (dequeueFirst(&queue, &extracted)) {
+                printf("\nExtracted message:\n");
+                printf("ID: %d | Priority: %d | Text: %s\n",
+                       extracted.id, extracted.priority, extracted.text);
+            } else printf("Queue is empty!\n");
             break;
-
         case 4:
-            if (readInt("Enter exact priority: ",
-                &priority)) {
-                if (priority >= 0 && priority <= 255) {
-                    dequeuePriority(&queue, priority);
-                }
-                else {
-                    printf("Priority must be 0-255!\n");
-                }
+        case 5: {
+            printf("%s", choice == 4 ? "Enter exact priority: " : "Enter minimum priority: ");
+            if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+            if (sscanf(buffer, " %d %c", &priority, &extra) != 1) {
+                printf("Invalid number!\n"); break;
             }
-            break;
-
-        case 5:
-            if (readInt("Enter minimum priority: ",
-                &priority)) {
-                if (priority >= 0 && priority <= 255) {
-                    dequeueMinPriority(&queue, priority);
-                }
-                else {
-                    printf("Priority must be 0-255!\n");
-                }
+            if (priority < 0 || priority > 255) {
+                printf("Priority must be 0-255!\n"); break;
             }
+            int found = choice == 4
+                ? dequeuePriority(&queue, priority, &extracted)
+                : dequeueMinPriority(&queue, priority, &extracted);
+            if (found) {
+                printf("\nExtracted message:\n");
+                printf("ID: %d | Priority: %d | Text: %s\n",
+                       extracted.id, extracted.priority, extracted.text);
+            } else if (choice == 4)
+                printf("No message with priority %d found.\n", priority);
+            else printf("No message with priority >= %d found.\n", priority);
             break;
-
+        }
         case 6:
-            printQueue(&queue);
+            if (!queue.head) { printf("\nQueue is empty!\n"); break; }
+            printf("\n========== PRIORITY QUEUE ==========\n");
+            for (const Message* current = queue.head; current; current = current->next)
+                printf("ID: %d | Priority: %3d | Text: %s\n",
+                       current->id, current->priority, current->text);
+            printf("------------------------------------\n");
+            printf("Total messages: %d\n", queue.count);
             break;
-
         case 7:
             clearQueue(&queue);
             printf("Queue cleared!\n");
             break;
-
         case 0:
-            clearQueue(&queue);
             printf("Program finished.\n");
-            return 0;
-
+            goto cleanup;
         default:
             printf("Invalid menu option!\n");
         }
     }
-
+cleanup:
     clearQueue(&queue);
     return 0;
 }
