@@ -1,4 +1,4 @@
-﻿
+
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -35,48 +35,12 @@ double squareRoot(double a) {
     return sqrt(a);
 }
 
-// Read an integer
-int inputInt() {
-    int value;
-    char buffer[100];
-    char extra;
-
-    while (1) {
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            exit(0);
-        }
-
-        if (sscanf(buffer, " %d %c", &value, &extra) == 1) {
-            return value;
-        }
-
-        printf("Invalid input. Enter an integer: ");
-    }
-}
-
-// Read a number
-double inputDouble() {
-    double value;
-    char buffer[100];
-    char extra;
-
-    while (1) {
-        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-            exit(0);
-        }
-
-        if (sscanf(buffer, " %lf %c", &value, &extra) == 1) {
-            return value;
-        }
-
-        printf("Invalid input. Enter a number: ");
-    }
-}
-
 // Main program
 int main() {
     int choice;
     double a, b, result;
+    char buffer[100];
+    char extra;
 
     do {
         printf("\n========== CALCULATOR ==========\n");
@@ -90,7 +54,11 @@ int main() {
         printf("================================\n");
         printf("Enter your choice: ");
 
-        choice = inputInt();
+        do {
+            if (!fgets(buffer, sizeof(buffer), stdin)) return 0;
+            if (sscanf(buffer, " %d %c", &choice, &extra) == 1) break;
+            printf("Invalid input. Enter an integer: ");
+        } while (1);
 
         if (choice == 0) {
             printf("\nExiting calculator. Goodbye!\n");
@@ -103,11 +71,19 @@ int main() {
         }
 
         printf("\nEnter first number: ");
-        a = inputDouble();
+        do {
+            if (!fgets(buffer, sizeof(buffer), stdin)) return 0;
+            if (sscanf(buffer, " %lf %c", &a, &extra) == 1) break;
+            printf("Invalid input. Enter a number: ");
+        } while (1);
 
         if (choice != 6) {
             printf("Enter second number: ");
-            b = inputDouble();
+            do {
+                if (!fgets(buffer, sizeof(buffer), stdin)) return 0;
+                if (sscanf(buffer, " %lf %c", &b, &extra) == 1) break;
+                printf("Invalid input. Enter a number: ");
+            } while (1);
         }
 
         switch (choice) {
