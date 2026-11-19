@@ -1,4 +1,3 @@
-﻿
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
@@ -33,47 +32,6 @@ Node* root = NULL;
 int count = 0;
 int changes = 0;
 
-void inputString(char* str, int size) {
-    if (fgets(str, size, stdin) != NULL) {
-        size_t len = strcspn(str, "\n");
-
-        if (str[len] == '\n') {
-            str[len] = '\0';
-        }
-        else {
-            int ch;
-            while ((ch = getchar()) != '\n' && ch != EOF);
-        }
-    }
-    else {
-        str[0] = '\0';
-    }
-}
-
-void inputRequired(char* str, int size) {
-    do {
-        inputString(str, size);
-
-        if (strlen(str) == 0) {
-            printf("This field is required. Try again: ");
-        }
-    } while (strlen(str) == 0);
-}
-
-int inputNumber(void) {
-    char buffer[30];
-    int number;
-    char extra;
-
-    inputString(buffer, sizeof(buffer));
-
-    if (sscanf(buffer, "%d %c", &number, &extra) != 1) {
-        return -1;
-    }
-
-    return number;
-}
-
 // Сравнение контактов по ФИО
 int compareContacts(const Contact* a, const Contact* b) {
     int result = strcmp(a->surname, b->surname);
@@ -87,50 +45,6 @@ int compareContacts(const Contact* a, const Contact* b) {
         return result;
 
     return strcmp(a->patronymic, b->patronymic);
-}
-
-void inputContactData(Contact* c) {
-    printf("Last name: ");
-    inputRequired(c->surname, MAX_LEN);
-
-    printf("First name: ");
-    inputRequired(c->name, MAX_LEN);
-
-    printf("Middle name: ");
-    inputString(c->patronymic, MAX_LEN);
-
-    printf("Workplace: ");
-    inputString(c->workplace, MAX_LEN);
-
-    printf("Job title: ");
-    inputString(c->position, MAX_LEN);
-
-    printf("Phone number: ");
-    inputString(c->phone, MAX_LEN);
-
-    printf("Email address: ");
-    inputString(c->email, MAX_LEN);
-
-    printf("Social media profile: ");
-    inputString(c->social, MAX_LEN);
-
-    printf("Messenger profile: ");
-    inputString(c->messenger, MAX_LEN);
-}
-
-void printContact(const Contact* c, int number) {
-    printf("\nContact #%d\n", number);
-    printf("-----------------------------\n");
-    printf("Last name: %s\n", c->surname);
-    printf("First name: %s\n", c->name);
-    printf("Middle name: %s\n", c->patronymic);
-    printf("Workplace: %s\n", c->workplace);
-    printf("Job title: %s\n", c->position);
-    printf("Phone number: %s\n", c->phone);
-    printf("Email address: %s\n", c->email);
-    printf("Social media: %s\n", c->social);
-    printf("Messenger: %s\n", c->messenger);
-    printf("-----------------------------\n");
 }
 
 int height(Node* node) {
@@ -272,43 +186,30 @@ Node* buildBalanced(Node** array, int left, int right) {
     return node;
 }
 
-// Периодическая AVL-балансировка всего дерева
-void balanceTree(void) {
+
+// Return 1 on success, 0 for an empty tree, -1 for allocation failure.
+int balanceTree(void) {
     int total = countNodes(root);
-
-    if (total == 0) {
-        printf("\nTree is empty!\n");
-        return;
-    }
-
+    if (total == 0) return 0;
     Node** array = malloc((size_t)total * sizeof(Node*));
-
-    if (array == NULL) {
-        printf("\nMemory allocation error!\n");
-        return;
-    }
-
+    if (!array) return -1;
     int index = 0;
-
     collectNodes(root, array, &index);
     root = buildBalanced(array, 0, total - 1);
-
     free(array);
-
-    printf("\nAVL balancing completed!\n");
-    printf("Tree height: %d\n", height(root));
+    return 1;
 }
 
-void checkBalancing(void) {
+// Return 1 when periodic balancing occurs, -1 on allocation error, 0 otherwise.
+int checkBalancing(void) {
     changes++;
-
     if (changes >= BALANCE_INTERVAL) {
-        printf("\nPeriodic AVL balancing...\n");
-        balanceTree();
-        changes = 0;
+        int result = balanceTree();
+        if (result >= 0) changes = 0;
+        return result == 1 ? 1 : -1;
     }
+    return 0;
 }
-
 Node* findMin(Node* node) {
     while (node != NULL && node->left != NULL)
         node = node->left;
@@ -349,16 +250,6 @@ Node* deleteNode(Node* node, const Contact* key) {
     return node;
 }
 
-// Симметричный обход дерева
-void printTree(Node* node, int* number) {
-    if (node == NULL)
-        return;
-
-    printTree(node->left, number);
-    printContact(&node->data, (*number)++);
-    printTree(node->right, number);
-}
-
 Node* findByNumber(Node* node, int target, int* current) {
     if (node == NULL)
         return NULL;
@@ -376,128 +267,6 @@ Node* findByNumber(Node* node, int target, int* current) {
     return findByNumber(node->right, target, current);
 }
 
-void addContact(void) {
-    Contact contact;
-
-    printf("\n===== ADD NEW CONTACT =====\n");
-    inputContactData(&contact);
-
-    Node* newNode = createNode(&contact);
-
-    if (newNode == NULL) {
-        printf("\nMemory allocation error!\n");
-        return;
-    }
-
-    root = insertNode(root, newNode);
-    count++;
-
-    printf("\nContact added successfully!\n");
-
-    checkBalancing();
-}
-
-void showContacts(void) {
-    if (root == NULL) {
-        printf("\nThe contact list is empty.\n");
-        return;
-    }
-
-    int number = 1;
-
-    printf("\n===== CONTACT LIST =====\n");
-    printTree(root, &number);
-
-    printf("\nTotal contacts: %d\n", count);
-}
-
-// Редактирование существующего контакта
-void editContact(void) {
-    if (root == NULL) {
-        printf("\nThe contact list is empty.\n");
-        return;
-    }
-
-    showContacts();
-
-    printf("\nEnter the contact number to edit: ");
-    int number = inputNumber();
-
-    if (number < 1 || number > count) {
-        printf("\nInvalid contact number!\n");
-        return;
-    }
-
-    int current = 0;
-    Node* node = findByNumber(root, number, &current);
-
-    if (node == NULL)
-        return;
-
-    Contact oldContact = node->data;
-    Contact updated;
-
-    printf("\n===== EDIT CONTACT =====\n");
-    printf("Enter new contact information.\n");
-
-    inputContactData(&updated);
-
-    root = deleteNode(root, &oldContact);
-
-    Node* newNode = createNode(&updated);
-
-    if (newNode == NULL) {
-        printf("\nMemory allocation error!\n");
-
-        newNode = createNode(&oldContact);
-
-        if (newNode != NULL)
-            root = insertNode(root, newNode);
-        else
-            count--;
-
-        return;
-    }
-
-    root = insertNode(root, newNode);
-
-    printf("\nContact updated successfully!\n");
-
-    checkBalancing();
-}
-
-void deleteContact(void) {
-    if (root == NULL) {
-        printf("\nThe contact list is empty.\n");
-        return;
-    }
-
-    showContacts();
-
-    printf("\nEnter the contact number to delete: ");
-    int number = inputNumber();
-
-    if (number < 1 || number > count) {
-        printf("\nInvalid contact number!\n");
-        return;
-    }
-
-    int current = 0;
-    Node* node = findByNumber(root, number, &current);
-
-    if (node == NULL)
-        return;
-
-    Contact key = node->data;
-
-    root = deleteNode(root, &key);
-    count--;
-
-    printf("\nContact deleted successfully!\n");
-
-    checkBalancing();
-}
-
 // Проверка AVL-свойства дерева
 int checkAVL(Node* node, int* valid) {
     if (node == NULL)
@@ -512,19 +281,6 @@ int checkAVL(Node* node, int* valid) {
     return 1 + maxInt(left, right);
 }
 
-void showTreeInfo(void) {
-    int valid = 1;
-
-    int actualHeight = checkAVL(root, &valid);
-
-    printf("\n===== TREE INFORMATION =====\n");
-    printf("Total contacts: %d\n", count);
-    printf("Tree height: %d\n", actualHeight);
-    printf("AVL balanced: %s\n", valid ? "Yes" : "No");
-    printf("Changes until balancing: %d\n",
-        BALANCE_INTERVAL - changes);
-}
-
 // Освобождение памяти дерева
 void freeTree(Node* node) {
     if (node == NULL)
@@ -535,99 +291,220 @@ void freeTree(Node* node) {
     free(node);
 }
 
-// Отображение структуры бинарного дерева
-void printTreeStructure(Node* node, int level) {
-    if (node == NULL)
-        return;
 
-    printTreeStructure(node->right, level + 1);
-
-    for (int i = 0; i < level; i++) {
-        printf("        ");
-    }
-
-    printf("|-- %s %s\n",
-        node->data.surname,
-        node->data.name);
-
-    printTreeStructure(node->left, level + 1);
+int addContact(const Contact* contact) {
+    Node* newNode = createNode(contact);
+    if (!newNode) return 0;
+    root = insertNode(root, newNode);
+    count++;
+    return 1;
 }
 
-void showTreeStructure(void) {
-    if (root == NULL) {
-        printf("\nTree is empty!\n");
-        return;
+// Return 1 on success, 0 on invalid index, -1 on allocation failure.
+int editContact(int number, const Contact* updated) {
+    int current = 0;
+    Node* node = findByNumber(root, number, &current);
+    if (!node) return 0;
+    Contact oldContact = node->data;
+    root = deleteNode(root, &oldContact);
+    Node* newNode = createNode(updated);
+    if (!newNode) {
+        newNode = createNode(&oldContact);
+        if (newNode) root = insertNode(root, newNode);
+        else count--;
+        return -1;
     }
-
-    printf("\n========== AVL TREE STRUCTURE ==========\n\n");
-
-    printTreeStructure(root, 0);
-
-    printf("\nTree height: %d\n", height(root));
-    printf("Total contacts: %d\n", count);
+    root = insertNode(root, newNode);
+    return 1;
 }
 
-// Главное меню программы
+int deleteContact(int number) {
+    int current = 0;
+    Node* node = findByNumber(root, number, &current);
+    if (!node) return 0;
+    Contact key = node->data;
+    root = deleteNode(root, &key);
+    count--;
+    return 1;
+}
+
 int main(void) {
     int choice;
-
-    do {
+    char buffer[100], extra;
+    while (1) {
         printf("\n========== PHONE BOOK ==========\n");
-        printf("1. Add contact\n");
-        printf("2. View all contacts\n");
-        printf("3. Edit contact\n");
-        printf("4. Delete contact\n");
-        printf("5. Balance AVL tree\n");
-        printf("6. Tree information\n");
-        printf("7. Show tree structure\n");
-        printf("0. Exit\n");
-        printf("================================\n");
+        printf("1. Add contact\n2. View all contacts\n3. Edit contact\n");
+        printf("4. Delete contact\n5. Balance AVL tree\n6. Tree information\n");
+        printf("7. Show tree structure\n0. Exit\n================================\n");
         printf("Enter your choice: ");
+        if (!fgets(buffer, sizeof(buffer), stdin)) break;
+        if (sscanf(buffer, " %d %c", &choice, &extra) != 1) choice = -1;
 
-        choice = inputNumber();
+        // Print contacts in sorted order before editing or deleting.
+        if (choice == 2 || choice == 3 || choice == 4) {
+            if (!root) {
+                printf("\nThe contact list is empty.\n");
+                continue;
+            }
+            printf("\n===== CONTACT LIST =====\n");
+            for (int i = 1; i <= count; i++) {
+                int current = 0;
+                Node* node = findByNumber(root, i, &current);
+                if (!node) continue;
+                const Contact* c = &node->data;
+                printf("\nContact #%d\n", i);
+                printf("-----------------------------\n");
+                printf("Last name: %s\n", c->surname);
+                printf("First name: %s\n", c->name);
+                printf("Middle name: %s\n", c->patronymic);
+                printf("Workplace: %s\n", c->workplace);
+                printf("Job title: %s\n", c->position);
+                printf("Phone number: %s\n", c->phone);
+                printf("Email address: %s\n", c->email);
+                printf("Social media: %s\n", c->social);
+                printf("Messenger: %s\n", c->messenger);
+                printf("-----------------------------\n");
+            }
+            printf("\nTotal contacts: %d\n", count);
+            if (choice == 2) continue;
+        }
 
         switch (choice) {
         case 1:
-            addContact();
-            break;
+        case 3: {
+            int index = 0;
+            if (choice == 3) {
+                printf("\nEnter the contact number to edit: ");
+                if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+                if (sscanf(buffer, " %d %c", &index, &extra) != 1 ||
+                    index < 1 || index > count) {
+                    printf("\nInvalid contact number!\n"); break;
+                }
+            }
 
-        case 2:
-            showContacts();
-            break;
+            Contact contact = {0};
+            char* fields[] = {
+                contact.surname, contact.name, contact.patronymic,
+                contact.workplace, contact.position, contact.phone,
+                contact.email, contact.social, contact.messenger
+            };
+            const char* prompts[] = {
+                "Last name: ", "First name: ", "Middle name: ",
+                "Workplace: ", "Job title: ", "Phone number: ",
+                "Email address: ", "Social media profile: ", "Messenger profile: "
+            };
+            printf("\n===== %s CONTACT =====\n", choice == 1 ? "ADD NEW" : "EDIT");
+            if (choice == 3) printf("Enter new contact information.\n");
+            for (int i = 0; i < 9; i++) {
+                do {
+                    printf("%s", prompts[i]);
+                    if (!fgets(fields[i], MAX_LEN, stdin)) goto cleanup;
+                    size_t len = strcspn(fields[i], "\n");
+                    if (fields[i][len] == '\n') fields[i][len] = '\0';
+                    else {
+                        int ch;
+                        while ((ch = getchar()) != '\n' && ch != EOF) {}
+                    }
+                    if (i < 2 && fields[i][0] == '\0')
+                        printf("This field is required. Try again: ");
+                } while (i < 2 && fields[i][0] == '\0');
+            }
 
-        case 3:
-            editContact();
-            break;
-
-        case 4:
-            deleteContact();
-            break;
-
-        case 5:
-            balanceTree();
-            changes = 0;
-            break;
-
-        case 6:
-            showTreeInfo();
-            break;
-
-        case 7:
-            showTreeStructure();
-            break;
-
-        case 0:
-            freeTree(root);
-            root = NULL;
-            printf("\nExiting the phone book. Goodbye!\n");
-            break;
-
-        default:
-            printf("\nInvalid choice. Please try again.\n");
+            int status = choice == 1 ? addContact(&contact) : editContact(index, &contact);
+            if (status != 1) {
+                printf("\nMemory allocation error!\n"); break;
+            }
+            printf(choice == 1 ? "\nContact added successfully!\n"
+                               : "\nContact updated successfully!\n");
+            int balanced = checkBalancing();
+            if (balanced != 0) {
+                printf("\nPeriodic AVL balancing...\n");
+                if (balanced == 1) {
+                    printf("\nAVL balancing completed!\n");
+                    printf("Tree height: %d\n", height(root));
+                } else printf("\nMemory allocation error!\n");
+            }
             break;
         }
-
-    } while (choice != 0);
-
+        case 4: {
+            printf("\nEnter the contact number to delete: ");
+            int index;
+            if (!fgets(buffer, sizeof(buffer), stdin)) goto cleanup;
+            if (sscanf(buffer, " %d %c", &index, &extra) != 1 ||
+                index < 1 || index > count) {
+                printf("\nInvalid contact number!\n"); break;
+            }
+            if (deleteContact(index)) {
+                printf("\nContact deleted successfully!\n");
+                int balanced = checkBalancing();
+                if (balanced != 0) {
+                    printf("\nPeriodic AVL balancing...\n");
+                    if (balanced == 1) {
+                        printf("\nAVL balancing completed!\n");
+                        printf("Tree height: %d\n", height(root));
+                    } else printf("\nMemory allocation error!\n");
+                }
+            }
+            break;
+        }
+        case 5: {
+            int status = balanceTree();
+            if (status == 0) printf("\nTree is empty!\n");
+            else if (status < 0) printf("\nMemory allocation error!\n");
+            else {
+                changes = 0;
+                printf("\nAVL balancing completed!\n");
+                printf("Tree height: %d\n", height(root));
+            }
+            break;
+        }
+        case 6: {
+            int valid = 1;
+            int actualHeight = checkAVL(root, &valid);
+            printf("\n===== TREE INFORMATION =====\n");
+            printf("Total contacts: %d\n", count);
+            printf("Tree height: %d\n", actualHeight);
+            printf("AVL balanced: %s\n", valid ? "Yes" : "No");
+            printf("Changes until balancing: %d\n", BALANCE_INTERVAL - changes);
+            break;
+        }
+        case 7: {
+            if (!root) { printf("\nTree is empty!\n"); break; }
+            printf("\n========== AVL TREE STRUCTURE ==========\n\n");
+            // Right-node-left traversal, exactly as in the original recursive print.
+            typedef struct { Node* node; int level; int stage; } Frame;
+            size_t capacity = (size_t)count * 3 + 1;
+            Frame* stack = malloc(capacity * sizeof(Frame));
+            if (!stack) { printf("Memory allocation error!\n"); break; }
+            size_t top = 0;
+            stack[top++] = (Frame){root, 0, 0};
+            while (top) {
+                Frame frame = stack[--top];
+                if (!frame.node) continue;
+                if (frame.stage == 1) {
+                    for (int i = 0; i < frame.level; i++) printf("        ");
+                    printf("|-- %s %s\n", frame.node->data.surname,
+                           frame.node->data.name);
+                } else {
+                    stack[top++] = (Frame){frame.node->left, frame.level + 1, 0};
+                    stack[top++] = (Frame){frame.node, frame.level, 1};
+                    stack[top++] = (Frame){frame.node->right, frame.level + 1, 0};
+                }
+            }
+            free(stack);
+            printf("\nTree height: %d\n", height(root));
+            printf("Total contacts: %d\n", count);
+            break;
+        }
+        case 0:
+            printf("\nExiting the phone book. Goodbye!\n");
+            goto cleanup;
+        default:
+            printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+cleanup:
+    freeTree(root);
+    root = NULL;
     return 0;
 }
